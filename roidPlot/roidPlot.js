@@ -1,6 +1,7 @@
 function makePlot() {
   var xScale = new Plottable.Scale.Ordinal();
   var yScale = new Plottable.Scale.Linear();
+  var yScale2 = new Plottable.Scale.Linear();
   var radScale = new Plottable.Scale.Linear();
   radScale.domain([0,6]).range([0,20]);
   yScale.domain([0,0.06]);
@@ -9,6 +10,16 @@ function makePlot() {
   xScale.rangeType("points");
   
   var yAxis = new Plottable.Axis.Numeric(yScale, "left");
+  
+  var yAxis2 = new Plottable.Axis.Numeric(yScale, "right");
+  yAxis2.formatter(function(tickValue) {
+  	return String(Number(tickValue*398).toFixed(0));
+  });
+  
+  var chartTitle = new Plottable.Component.TitleLabel("10 Nearby Asteroid Threats by MOID")
+  var AUtag = new Plottable.Component.Label("AU");
+  var LDtag = new Plottable.Component.Label("Lunar Distances", "right");
+  
   var renderer = new Plottable.Plot.Scatter(subOutput, xScale, yScale)
                               .project("x", "Name", xScale)
                               .project("y", "MOID", yScale)
@@ -16,8 +27,9 @@ function makePlot() {
                               .project("fill", function() { return "steelblue"; } );
 
   var chart = new Plottable.Component.Table([
-                    [yAxis, renderer],
-                    [null,  xAxis   ]
+  					[AUtag, chartTitle, null, null],
+                    [yAxis, renderer, yAxis2, LDtag],
+                    [null,  xAxis, null, null]
                   ]);
 
   chart.renderTo("#roidPlot");
